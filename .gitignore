@@ -1,3 +1,5 @@
+.DS_Store
+
 # Unity .gitignore
 [Ll]ibrary/
 [Tt]emp/
@@ -16,3 +18,8 @@
 
 #Unity3D Generated File On Crash Reports
 sysinfo.txt
+
+# Android .gitignore
+bin/
+gen/
+.settings/
