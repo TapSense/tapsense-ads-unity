@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 
 
-public class DemoControl : MonoBehaviour, TapSense.TapSenseInterstitialListener, TapSense.TapSenseAdViewListener
+public class DemoControl : MonoBehaviour, TapSense.TapSenseInterstitialListener, TapSense.TapSenseVideoListener, TapSense.TapSenseAdViewListener
 {
 	public Texture2D pauseIcon, menuBackground, resumeButton, restartButton, fullscreenButton, muteButton, quitButton;
 	
@@ -81,9 +81,11 @@ public class DemoControl : MonoBehaviour, TapSense.TapSenseInterstitialListener,
 	#if UNITY_ANDROID || UNITY_IPHONE
 		if (mInterstitial == null || mBanner == null) {
 			TapSense.setTestMode();
+			TapSense.setShowDebugLog();
 
         	mInterstitial = new TapSense.TapSenseInterstitial(INTERSTITIAL_AD_UNIT_ID);
 			mInterstitial.setListener(this);
+			mInterstitial.setVideoListener(this);
 
         	mBanner = new TapSense.TapSenseAdView(BANNER_AD_UNIT_ID,
 		 	                                      TapSense.BannerPosition.TOP,
@@ -264,6 +266,13 @@ public class DemoControl : MonoBehaviour, TapSense.TapSenseInterstitialListener,
 	}
 	public void onInterstitialDismissed(TapSense.TapSenseInterstitial interstitial) {
 		Debug.Log ("In DemoControl.onInterstitialDismissed()");
+	}
+
+	public void onInterstitialCompletedVideo(TapSense.TapSenseInterstitial interstitial) {
+		Debug.Log ("In DemoControl.onInterstitialCompletedVideo()");
+	}
+	public void onInterstitialSkippedVideo(TapSense.TapSenseInterstitial interstitial) {
+		Debug.Log ("In DemoControl.onInterstitialSkippedVideo()");
 	}
 	
 	public void onAdViewLoaded(TapSense.TapSenseAdView banner) {

@@ -216,7 +216,6 @@ typedef enum {
 - (void) interstitialDidFailToLoad:(TapSenseInterstitial *)interstitial
                          withError:(NSError *)error
 {
-    // [self getCString:[error localizedDescription]]
     UnitySendMessage("TapSense", "onInterstitialFailedToLoad", [self getInterstitialIndex:interstitial]);
 }
 
@@ -244,7 +243,6 @@ typedef enum {
 
 - (void)adViewDidFailToLoad:(TapSenseAdView *)adView withError:(NSError *)error
 {
-    // [self getCString:[error localizedDescription]]
     UnitySendMessage("TapSense", "onAdViewExpanded", [self getAdViewIndex:adView]);
 }
 

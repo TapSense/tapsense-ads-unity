@@ -46,6 +46,13 @@ public class TapSense : MonoBehaviour {
 		void onInterstitialDismissed(TapSenseInterstitial interstitial);
 		#endif
 	}
+	
+	public interface TapSenseVideoListener {
+		#if UNITY_ANDROID || UNITY_IPHONE
+		void onInterstitialCompletedVideo(TapSenseInterstitial interstitial);
+		void onInterstitialSkippedVideo(TapSenseInterstitial interstitial);
+		#endif
+	}
 
 	public interface TapSenseAdViewListener {
 		#if UNITY_ANDROID || UNITY_IPHONE
@@ -111,6 +118,30 @@ public class TapSense : MonoBehaviour {
 		if (interstitials.ContainsKey(id) && interstitials[id] != null) {
 			TapSenseInterstitialListener l = interstitials[id].getListener();
 			if (l != null) l.onInterstitialDismissed(interstitials[id]);
+		}
+	}
+	
+	// ========================================
+	// Video callbacks from native code
+	// ========================================
+	
+	public void onInterstitialCompletedVideo(string msg) {
+		int id = int.Parse(msg);
+		log ("onInterstitialCompletedVideo("+msg+")");
+		
+		if (interstitials.ContainsKey(id) && interstitials[id] != null) {
+			TapSenseVideoListener l = interstitials[id].getVideoListener();
+			if (l != null) l.onInterstitialCompletedVideo(interstitials[id]);
+		}
+	}
+	
+	public void onInterstitialSkippedVideo(string msg) {
+		int id = int.Parse(msg);
+		log ("onInterstitialSkippedVideo("+msg+")");
+		
+		if (interstitials.ContainsKey(id) && interstitials[id] != null) {
+			TapSenseVideoListener l = interstitials[id].getVideoListener();
+			if (l != null) l.onInterstitialSkippedVideo(interstitials[id]);
 		}
 	}
 
@@ -267,6 +298,7 @@ public class TapSense : MonoBehaviour {
 	public class TapSenseInterstitial {
 		private int id;
 		private TapSenseInterstitialListener listener;
+		private TapSenseVideoListener
 
 		public TapSenseInterstitial(string adUnitId, bool autoRequestAd, TSKeywordMap map) {
 			if (!_safeSetup()) {
@@ -345,13 +377,21 @@ public class TapSense : MonoBehaviour {
 			if (!_safeSetup()) return;
 			_requestInterstitial(id);
 		}
-
+		
 		public void setListener(TapSenseInterstitialListener listener) {
 			this.listener = listener;
 		}
 		
+		public void setVideoListener(TapSenseVideoListener listener) {
+			this.videoListener = listener;
+		}
+		
 		public TapSenseInterstitialListener getListener() {
 			return listener;
+		}
+		
+		public TapSenseVideoListener getVideoListener() {
+			return videoListener;
 		}
 	}
 
@@ -558,6 +598,7 @@ public class TapSense : MonoBehaviour {
 	public class TapSenseInterstitial {
 		private int id;
 		private TapSenseInterstitialListener listener;
+		private TapSenseVideoListener videoListener;
 
 		public TapSenseInterstitial(string adUnitId) {
 			TapSense.log("new Interstitial(): start");
@@ -640,13 +681,21 @@ public class TapSense : MonoBehaviour {
 			if (!_safeSetup()) return false;
 			return _bridge.Call<bool>("interstitialIsReady", id);
 		}
-
+		
 		public void setListener(TapSenseInterstitialListener listener) {
 			this.listener = listener;
 		}
-
+		
+		public void setVideoListener(TapSenseVideoListener listener) {
+			this.videoListener = listener;
+		}
+		
 		public TapSenseInterstitialListener getListener() {
 			return listener;
+		}
+		
+		public TapSenseVideoListener getVideoListener() {
+			return videoListener;
 		}
 
 		public void destroy() {
