@@ -172,12 +172,6 @@ typedef enum {
     [adView loadAd];
 }
 
-- (void) refreshAdView:(int) index
-{
-    TapSenseAdView *adView = [self.bannerArray objectAtIndex:index];
-    [adView refreshAd];
-}
-
 - (void) setAdViewAtIndex:(int) index withVisibility:(BOOL) visible
 {
     TapSenseAdView *adView = [self.bannerArray objectAtIndex:index];
@@ -227,6 +221,16 @@ typedef enum {
 - (void) interstitialDidDisappear:(TapSenseInterstitial *)interstitial
 {
     UnitySendMessage("TapSense", "onInterstitialDismissed", [self getInterstitialIndex:interstitial]);
+}
+
+- (void)interstitialDidCompleteVideo:(TapSenseInterstitial*)interstitial
+{
+    UnitySendMessage("TapSense", "onInterstitialCompletedVideo", [self getInterstitialIndex:interstitial]);
+}
+
+- (void)interstitialDidSkipVideo:(TapSenseInterstitial*)interstitial;
+{
+    UnitySendMessage("TapSense", "onInterstitialSkippedVideo", [self getInterstitialIndex:interstitial]);
 }
 
 # pragma mark - TapSenseAdViewDelegate
@@ -367,11 +371,6 @@ void _setKeywordMap(int index, int keywordMapIndex)
 void _loadAd(int index)
 {
     [[TSUnityPlugin sharedInstance] loadAdView:index];
-}
-
-void _refreshAd(int index)
-{
-    [[TSUnityPlugin sharedInstance] refreshAdView:index];
 }
 
 void _setVisibility(int index, bool visible)

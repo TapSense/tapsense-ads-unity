@@ -263,9 +263,6 @@ public class TapSense : MonoBehaviour {
 	
 	[DllImport ("__Internal")]
 	private static extern void _loadAd(int index);
-	
-	[DllImport ("__Internal")]
-	private static extern void _refreshAd(int index);
 
 	[DllImport ("__Internal")]
 	private static extern void _setVisibility(int index, bool visible);
@@ -298,7 +295,7 @@ public class TapSense : MonoBehaviour {
 	public class TapSenseInterstitial {
 		private int id;
 		private TapSenseInterstitialListener listener;
-		private TapSenseVideoListener
+		private TapSenseVideoListener videoListener;
 
 		public TapSenseInterstitial(string adUnitId, bool autoRequestAd, TSKeywordMap map) {
 			if (!_safeSetup()) {
