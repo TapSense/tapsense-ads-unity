@@ -1,3 +1,8 @@
+// Upgrade NOTE: commented out 'float4 unity_LightmapST', a built-in variable
+// Upgrade NOTE: commented out 'sampler2D unity_Lightmap', a built-in variable
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+// Upgrade NOTE: replaced tex2D unity_Lightmap with UNITY_SAMPLE_TEX2D
+
 
 /* 
 
@@ -59,15 +64,15 @@ SubShader {
 		
 		#include "AngryInclude.cginc"
 		
-		float4 unity_LightmapST;
-		sampler2D unity_Lightmap;	
+		// float4 unity_LightmapST;
+		// sampler2D unity_Lightmap;	
 		float4 _MainTex_ST;
 				
 		v2f_full vert (appdata_full v) 
 		{
 			v2f_full o;
 			
-			o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+			o.pos = UnityObjectToClipPos (v.vertex);
 			o.uv.xy = TRANSFORM_TEX(v.texcoord,_MainTex);
 			
 			#ifdef LIGHTMAP_ON
@@ -99,7 +104,7 @@ SubShader {
 			tex += reflection * saturate(tex.a - _OneMinusReflectivity);
 												
 			#ifdef LIGHTMAP_ON
-				fixed3 lm =  DecodeLightmap (tex2D(unity_Lightmap, i.uv.zw));
+				fixed3 lm =  DecodeLightmap (UNITY_SAMPLE_TEX2D(unity_Lightmap, i.uv.zw));
 				tex.rgb *= lm;
 			#else
 				tex.rgb *= 0.75;
