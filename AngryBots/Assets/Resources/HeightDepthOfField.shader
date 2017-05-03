@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
  Shader "Hidden/HeightDepthOfField" {
 	Properties {
 		_MainTex ("Base", 2D) = "" {}
@@ -29,7 +31,7 @@
 		
 	v2fDofApply vertDofApply( appdata_img v ) {
 		v2fDofApply o;
-		o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+		o.pos = UnityObjectToClipPos(v.vertex);
 		o.uv.xy = v.texcoord.xy;
 				
 		return o;
@@ -47,7 +49,7 @@
 	
 	v2fDown vertDownsample(appdata_img v) {
 		v2fDown o;
-		o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+		o.pos = UnityObjectToClipPos(v.vertex);
 		
 		o.uv0.xy = v.texcoord.xy;
 		o.uv[0].xy = v.texcoord.xy + float2( -1.0, -1.0 ) * _InvRenderTargetSize;
@@ -70,7 +72,7 @@
 		half3 tmpVertex = v.vertex.xyz;
 				
 		v.vertex.z = 0.1;
-		o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+		o.pos = UnityObjectToClipPos(v.vertex);
 		o.uv = v.texcoord;
 		
 		o.interpolatedRay = _FrustumCornersWS[(int)tmpVertex.z].xyz;
